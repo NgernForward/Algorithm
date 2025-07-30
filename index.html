@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CAI โครงสร้างข้อมูลแบบลิงค์ลิสต์</title>
+<!-- โหลดฟอนต์ Promp -->
+<link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet" />
+<style>
+  body {
+    font-family: 'Prompt', sans-serif;
+    background: linear-gradient(135deg, #6a0dad, #d7263d);
+    color: #fff;
+    margin: 0;
+    padding: 0 15px 50px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  #container {
+    background: #fff;
+    color: #3a003e;
+    max-width: 700px;
+    width: 100%;
+    border-radius: 12px;
+    padding: 30px 40px;
+    box-shadow: 0 10px 30px rgba(215, 38, 61, 0.4);
+    margin-top: 40px;
+  }
+  h1, h2 {
+    color: #d7263d;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  p, ul, pre {
+    line-height: 1.5;
+  }
+  ul {
+    padding-left: 20px;
+  }
+  img {
+    max-width: 100%;
+    margin: 15px 0;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(215, 38, 61, 0.15);
+  }
+  .explain {
+    background: #ffe6ea;
+    border-left: 5px solid #d7263d;
+    padding: 12px 18px;
+    margin: 12px 0 25px;
+    color: #62001b;
+    font-style: italic;
+    border-radius: 6px;
+  }
+
+  /* ฟอร์มชื่อ */
+  #nameForm {
+    display: flex;
+    flex-direction: column;
+    max-width: 400px;
+    margin: 0 auto 40px;
+  }
+  #nameForm label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #d7263d;
+  }
+  #nameInput {
+    padding: 10px 14px;
+    font-size: 1.1em;
+    border-radius: 6px;
+    border: 2px solid #d7263d;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #nameInput:focus {
+    border-color: #6a0dad;
+  }
+  #startQuizBtn {
+    margin-top: 20px;
+    background: linear-gradient(90deg, #d7263d, #6a0dad);
+    border: none;
+    color: white;
+    padding: 12px 0;
+    font-size: 1.3em;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(215, 38, 61, 0.7);
+    transition: background 0.3s ease;
+  }
+  #startQuizBtn:hover {
+    background: linear-gradient(90deg, #6a0dad, #d7263d);
+  }
+
+  /* แบบทดสอบ */
+  #quiz {
+    display: none;
+  }
+  #timer {
+    font-weight: 700;
+    font-size: 1.4em;
+    color: #6a0dad;
+    margin-bottom: 15px;
+    text-align: center;
+    background: #ffe6ea;
+    border-radius: 10px;
+    padding: 8px 0;
+    box-shadow: 0 3px 10px rgba(215, 38, 61, 0.3);
+  }
+  #questionContainer {
+    font-size: 1.15em;
+    margin-bottom: 20px;
+  }
+  .question {
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: #d7263d;
+  }
+  .answers label {
+    display: block;
+    margin: 10px 0;
+    cursor: pointer;
+    background: #fff0f2;
+    border-radius: 8px;
+    padding: 10px 15px;
+    color: #62001b;
+    font-weight: 500;
+    transition: background 0.25s ease;
+  }
+  .answers label:hover {
+    background: #ffd4db;
+  }
+  .answers input[type="radio"] {
+    margin-right: 12px;
+    cursor: pointer;
+  }
+  #nextBtn {
+    display: block;
+    margin: 0 auto;
+    background: linear-gradient(90deg, #d7263d, #6a0dad);
+    border: none;
+    color: white;
+    padding: 14px 30px;
+    font-size: 1.3em;
+    font-weight: 700;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(215, 38, 61, 0.7);
+    transition: background 0.3s ease;
+  }
+  #nextBtn:disabled {
+    background: #bbb;
+    cursor: not-allowed;
+    box-shadow: none; 
+  }
+  #score {
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: 700;
+    color: #6a0dad;
+    margin-top: 40px;
+  }
+</style>
+</head>
+<body>
+
+<div id="container">
+
+  <div id="nameSection">
+    <h1>บทเรียนคอมพิวเตอร์ช่วยสอน</h1>
+      <h1>หน่วยที่ 5 เรื่อง Linklist</h1>
+    <form id="nameForm" onsubmit="return false;">
+      <label for="nameInput">ชื่อ-นามสกุล:</label>
+      <input type="text" id="nameInput" placeholder="กรอกชื่อของคุณ" required minlength="2" />
+      <button id="startQuizBtn" type="submit">Start</button>
+    </form>
+  </div>
+
+  <div id="content" style="display:none;">
+    <h1>โครงสร้างข้อมูลแบบลิงค์ลิสต์ (Linked List)</h1>
+
+    <h2>1. โครงสร้างและองค์ประกอบของลิงค์ลิสต์</h2>
+    <p>ลิงค์ลิสต์ประกอบด้วยโหนด (Node) ซึ่งแต่ละโหนดมี 2 ส่วนหลักคือ</p>
+    <ul>
+      <li><b>Data Field</b> — เก็บข้อมูลจริง</li>
+      <li><b>Link Field</b> — ตัวชี้ (Pointer) ที่เก็บที่อยู่ของโหนดถัดไป</li>
+    </ul>
+    <p>โหนดแต่ละโหนดจะเชื่อมโยงกันเป็นเส้นตรง โดยลำดับของข้อมูลจะถูกกำหนดโดยตัวชี้เหล่านี้</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6d/Singly-linked-list.svg" alt="ลิงค์ลิสต์เดี่ยว (Singly Linked List)">
+    <p class="explain">ภาพแสดงลิงค์ลิสต์เดี่ยว (Singly Linked List) ซึ่งโหนดแต่ละตัวจะชี้ไปยังโหนดถัดไป ตัวสุดท้ายชี้ไปที่ NULL (ไม่มีโหนดถัดไป)</p>
+
+    <h2>2. ลิงค์ลิสต์เดี่ยว (Singly Linked List)</h2>
+    <p>เป็นลิงค์ลิสต์ที่โหนดแต่ละโหนดชี้ไปยังโหนดถัดไปเพียงทางเดียว</p>
+    <ul>
+      <li>หัวลิงค์ลิสต์เรียกว่า <b>head</b></li>
+      <li>โหนดสุดท้ายจะมี pointer ชี้ไปที่ NULL เพื่อบ่งชี้จุดสิ้นสุด</li>
+    </ul>
+
+    <h2>3. ลิงค์ลิสต์คู่ (Doubly Linked List)</h2>
+    <p>ลิงค์ลิสต์แบบนี้แต่ละโหนดมี 3 ฟิลด์ คือ</p>
+    <ul>
+      <li>Data Field</li>
+      <li>Pointer ไปยังโหนดถัดไป (Next Pointer)</li>
+      <li>Pointer ไปยังโหนดก่อนหน้า (Previous Pointer หรือ LLink)</li>
+    </ul>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Doubly-linked-list.svg" alt="ลิงค์ลิสต์คู่ (Doubly Linked List)">
+    <p class="explain">ภาพแสดงลิงค์ลิสต์คู่ (Doubly Linked List) ที่สามารถเดินหน้าและถอยหลังได้</p>
+
+    <h2>4. ลิงค์ลิสต์วงกลม (Circular Linked List)</h2>
+    <p>ลิงค์ลิสต์ที่โหนดสุดท้ายชี้กลับไปยังโหนดแรก ทำให้การเดินข้อมูลเป็นวงกลม</p>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Circularly-linked-list.svg" alt="ลิงค์ลิสต์วงกลม (Circular Linked List)">
+    <p class="explain">ภาพแสดงลิงค์ลิสต์วงกลม (Circular Linked List)</p>
+
+    <h2>5. การใช้งานและข้อดีของลิงค์ลิสต์</h2>
+    <ul>
+      <li>เหมาะสำหรับข้อมูลที่มีการเพิ่มหรือลบบ่อยครั้ง</li>
+      <li>ไม่ต้องกำหนดขนาดล่วงหน้า (แตกต่างจาก Array)</li>
+      <li>การเพิ่มหรือลบโหนดไม่จำเป็นต้องเคลื่อนย้ายข้อมูลอื่นๆ</li>
+    </ul>
+
+    <h2>6. การจองและคืนหน่วยความจำ (Memory Management)</h2>
+    <p>ในภาษา C++ เราจองหน่วยความจำโหนดใหม่ด้วยคำสั่ง <code>new</code> และคืนหน่วยความจำด้วย <code>delete</code></p>
+
+    <h2>7. ตัวอย่างโครงสร้างโหนดใน C++</h2>
+    <pre>
+struct Node {
+  int data;       // Data Field
+  Node* next;     // Pointer to next node
+};
+    </pre>
+
+    <h2>8. การเพิ่มและลบโหนด</h2>
+    <ul>
+      <li>การเพิ่มโหนดที่จุดเริ่มต้น — สร้างโหนดใหม่ ชี้ pointer ของโหนดใหม่นี้ไปยัง head แล้วเปลี่ยน head ให้ชี้โหนดใหม่</li>
+      <li>การลบโหนดแรก — ให้ head ชี้ไปยังโหนดถัดไป แล้วลบโหนดแรกออก (delete)</li>
+    </ul>
+
+    <h2 style="text-align:center; margin-top:40px;">
+      พร้อมหรือยัง? กดปุ่มด้านล่างเพื่อเริ่มทำแบบทดสอบ
+    </h2>
+    <button id="startQuizFromContentBtn" style="display:block; margin: 0 auto; background: #6a11cb; color: white; border:none; padding: 15px 30px; font-size: 1.2em; border-radius: 10px; cursor:pointer;">
+      เริ่มทำแบบทดสอบ
+    </button>
+  </div>
+
+  <div id="quiz">
+    <h2 style="color:#2575fc; text-align:center;">แบบทดสอบโครงสร้างข้อมูลแบบลิงค์ลิสต์</h2>
+    <div id="userNameDisplay" style="text-align:center; font-weight:700; margin-bottom:15px; font-size:1.2em; color:#6a11cb;"></div>
+    <div id="timer">เวลาที่เหลือ: <span id="timeLeft">20</span> วินาที</div>
+    <div id="questionContainer"></div>
+    <button id="nextBtn" disabled>ข้อต่อไป</button>
+    <div id="score" style="display:none;"></div>
+  </div>
+
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "ลิงค์ลิสต์ประกอบด้วยอะไรบ้าง?",
+      choices: ["โหนดและพอยน์เตอร์", "แถวและคอลัมน์", "เมทริกซ์", "ตัวแปรและฟังก์ชัน"],
+      answer: 0
+    },
+    {
+      question: "ฟิลด์ที่เก็บข้อมูลในโหนดเรียกว่าอะไร?",
+      choices: ["Data Field", "Pointer", "Link Field", "Node"],
+      answer: 0
+    },
+    {
+      question: "ฟิลด์ที่เก็บที่อยู่โหนดถัดไปเรียกว่าอะไร?",
+      choices: ["Data Field", "Pointer", "Link Field", "Next Pointer"],
+      answer: 2
+    },
+    {
+      question: "ลิงค์ลิสต์เดี่ยว (Singly Linked List) มีการชี้ไปทางไหน?",
+      choices: ["ทางเดียวจากโหนดแรกไปโหนดสุดท้าย", "สองทาง", "เป็นวงกลม", "ไม่มีทิศทาง"],
+      answer: 0
+    },
+    {
+      question: "โหนดสุดท้ายในลิงค์ลิสต์เดี่ยวชี้ไปที่ใด?",
+      choices: ["NULL", "โหนดแรก", "โหนดก่อนหน้า", "ข้อมูลว่าง"],
+      answer: 0
+    },
+    {
+      question: "คำสั่งภาษา C++ สำหรับจองหน่วยความจำโหนดใหม่คืออะไร?",
+      choices: ["malloc", "new", "delete", "alloc"],
+      answer: 1
+    },
+    {
+      question: "โครงสร้างของโหนดลิงค์ลิสต์เดี่ยวมีฟิลด์กี่ฟิลด์?",
+      choices: ["1", "2", "3", "4"],
+      answer: 1
+    },
+    {
+      question: "ฟิลด์ตัวชี้ในลิงค์ลิสต์คู่มีกี่ฟิลด์?",
+      choices: ["1", "2", "3", "4"],
+      answer: 1
+    },
+    {
+      question: "การแทรกโหนดที่ตำแหน่งแรกของลิงค์ลิสต์ ต้องทำอย่างไร?",
+      choices: ["เปลี่ยน head ไปชี้โหนดใหม่", "ลบโหนดแรก", "เปลี่ยนโหนดสุดท้าย", "ไม่ต้องทำอะไร"],
+      answer: 0
+    },
+    {
+      question: "เมื่อโหนดถูกลบออกจากลิงค์ลิสต์ ต้องทำอะไร?",
+      choices: ["คืนหน่วยความจำ", "เก็บไว้ในตัวแปร", "เปลี่ยนค่า Data Field", "ไม่ต้องทำอะไร"],
+      answer: 0
+    },
+    {
+      question: "ลิงค์ลิสต์แบบวงกลม (Circular Linked List) มีลักษณะอย่างไร?",
+      choices: [
+        "โหนดสุดท้ายชี้กลับไปโหนดแรก",
+        "โหนดสุดท้ายชี้เป็น NULL",
+        "ไม่มีโหนดสุดท้าย",
+        "ทุกโหนดชี้ไปโหนดถัดไป"
+      ],
+      answer: 0
+    },
+    {
+      question: "โครงสร้างข้อมูลแบบลิงค์ลิสต์เหมาะกับการทำอะไร?",
+      choices: ["การเพิ่ม/ลบข้อมูลบ่อย", "ข้อมูลคงที่", "ค้นหาเร็วที่สุด", "ไม่ใช้หน่วยความจำ"],
+      answer: 0
+    },
+    {
+      question: "ในโค้ด C++ ตัวแปร head ในลิงค์ลิสต์เดี่ยวเป็นประเภทใด?",
+      choices: ["Pointer to node", "int", "array", "function"],
+      answer: 0
+    },
+    {
+      question: "การท่องเข้าไปในลิงค์ลิสต์เพื่ออะไร?",
+      choices: ["อ่านข้อมูลทีละโหนด", "ลบโหนดทั้งหมด", "เพิ่มโหนดใหม่", "ไม่มีประโยชน์"],
+      answer: 0
+    },
+    {
+      question: "คำสั่งที่ใช้ลบโหนดใน C++ คืออะไร?",
+      choices: ["delete", "remove", "free", "erase"],
+      answer: 0
+    },
+    {
+      question: "การลบโหนดแรกในลิงค์ลิสต์ ต้องทำอย่างไร?",
+      choices: [
+        "ให้ head ชี้โหนดถัดไป แล้ว delete โหนดแรก",
+        "ลบข้อมูลในโหนดแรก",
+        "เปลี่ยนค่าฟิลด์ data",
+        "ไม่มีการลบโหนดแรก"
+      ],
+      answer: 0
+    },
+    {
+      question: "ฟิลด์ LLink ในลิงค์ลิสต์คู่ใช้ทำอะไร?",
+      choices: ["ชี้ไปยังโหนดก่อนหน้า", "เก็บข้อมูล", "ชี้โหนดถัดไป", "ชี้โหนดสุดท้าย"],
+      answer: 0
+    },
+    {
+      question: "ในลิงค์ลิสต์คู่ โหนดแรกมีค่า LLink เป็นอะไร?",
+      choices: ["NULL", "ชี้โหนดก่อนหน้า", "ชี้โหนดถัดไป", "ชี้โหนดสุดท้าย"],
+      answer: 0
+    },
+    {
+      question: "การแทรกโหนดในลิงค์ลิสต์คู่ มีความซับซ้อนเพราะอะไร?",
+      choices: [
+        "ต้องปรับ pointer หลายตัว",
+        "ใช้ pointer เดียวได้เลย",
+        "ไม่สามารถแทรกได้",
+        "ต้องใช้ฟังก์ชันพิเศษ"
+      ],
+      answer: 0
+    },
+    {
+      question: "ลิงค์ลิสต์ประเภทไหนที่เดินได้ทั้งไปข้างหน้าและย้อนกลับ?",
+      choices: ["ลิงค์ลิสต์คู่", "ลิงค์ลิสต์เดี่ยว", "ลิงค์ลิสต์วงกลม", "ไม่มีลิงค์ลิสต์แบบนี้"],
+      answer: 0
+    }
+  ];
+
+  let currentQuestion = 0;
+  let score = 0;
+  let timeLeft = 20;
+  let timer;
+
+  const nameForm = document.getElementById('nameForm');
+  const nameInput = document.getElementById('nameInput');
+  const nameSection = document.getElementById('nameSection');
+  const contentDiv = document.getElementById('content');
+  const startQuizFromContentBtn = document.getElementById('startQuizFromContentBtn');
+
+  const quizDiv = document.getElementById('quiz');
+  const userNameDisplay = document.getElementById('userNameDisplay');
+  const timerDiv = document.getElementById('timer');
+  const timeLeftSpan = document.getElementById('timeLeft');
+  const questionContainer = document.getElementById('questionContainer');
+  const nextBtn = document.getElementById('nextBtn');
+  const scoreDiv = document.getElementById('score');
+
+  // เริ่มเรียนรู้หลังกรอกชื่อ
+  nameForm.onsubmit = () => {
+    if(nameInput.value.trim().length < 2){
+      alert('กรุณากรอกชื่ออย่างน้อย 2 ตัวอักษร');
+      return false;
+    }
+    nameSection.style.display = 'none';
+    contentDiv.style.display = 'block';
+    return false;
+  };
+
+  // เริ่มทำแบบทดสอบจากหน้าบทเรียน
+  startQuizFromContentBtn.onclick = () => {
+    startQuiz(nameInput.value.trim());
+  };
+
+  // เริ่มทำแบบทดสอบจากหน้าฟอร์มกรอกชื่อ (กรณีจะให้เริ่มได้เลย)
+  // หรือเพิ่มปุ่มถ้าอยากให้เริ่มได้จากฟอร์มเลย
+
+  function startQuiz(userName) {
+    contentDiv.style.display = 'none';
+    quizDiv.style.display = 'block';
+    userNameDisplay.textContent = `นักเรียน: ${userName}`;
+    currentQuestion = 0;
+    score = 0;
+    timeLeft = 20;
+    nextBtn.disabled = true;
+    showQuestion();
+
+    // เริ่มจับเวลาแบบนับถอยหลังตลอด (ไม่หยุด)
+    clearInterval(timer);
+    timer = setInterval(() => {
+      timeLeft--;
+      timeLeftSpan.textContent = timeLeft;
+      if(timeLeft <= 0){
+        checkAnswer(true);
+      }
+    }, 1000);
+  }
+
+  function showQuestion() {
+    nextBtn.disabled = true;
+    timeLeft = 20;
+    timeLeftSpan.textContent = timeLeft;
+    const q = questions[currentQuestion];
+    let html = `<div class="question"><b>ข้อ ${currentQuestion + 1}:</b> ${q.question}</div><div class="answers">`;
+    q.choices.forEach((choice, idx) => {
+      html += `
+      <label>
+        <input type="radio" name="answer" value="${idx}" />
+        ${choice}
+      </label>`;
+    });
+    html += '</div>';
+    questionContainer.innerHTML = html;
+
+    // ไม่หยุดจับเวลานะครับ เวลาเดินตลอด
+    // ถ้าผู้ใช้เลือกคำตอบแล้วเปิดปุ่มถัดไป
+    const inputs = questionContainer.querySelectorAll('input[name="answer"]');
+    inputs.forEach(input => {
+      input.onchange = () => {
+        nextBtn.disabled = false;
+      };
+    });
+  }
+
+  nextBtn.onclick = () => {
+    checkAnswer(false);
+  };
+
+  // checkAnswer แบบมี timeout หรือกด next
+  function checkAnswer(isTimeout) {
+    const selected = questionContainer.querySelector('input[name="answer"]:checked');
+    if(!isTimeout && selected){
+      const answer = parseInt(selected.value);
+      if(answer === questions[currentQuestion].answer){
+        score++;
+      }
+    }
+    // กรณีหมดเวลาข้อใดข้อหนึ่งโดยไม่ได้เลือกคำตอบ ถือว่าผิดคะแนนไม่เพิ่ม
+    currentQuestion++;
+    if(currentQuestion < questions.length){
+      showQuestion();
+      timeLeft = 20; // รีเซ็ตเวลาแต่ไม่หยุด timer
+      timeLeftSpan.textContent = timeLeft;
+    }else{
+      clearInterval(timer);
+      showScore();
+    }
+    nextBtn.disabled = true;
+  }
+
+  function showScore() {
+    quizDiv.innerHTML = `
+      <h2>แบบทดสอบเสร็จสิ้น</h2>
+      <p style="text-align:center; font-weight:700; font-size:1.3em; margin-top:20px;">
+      นักเรียน: ${nameInput.value.trim()}<br/>
+      คุณได้คะแนน <span style="color:#6a11cb;">${score}</span> จาก ${questions.length} ข้อ
+      </p>
+      <div style="text-align:center; margin-top:30px;">
+        <button onclick="location.reload()" style="
+          background: linear-gradient(90deg, #2575fc, #6a11cb);
+          border:none; color:white; padding:15px 40px; font-size:1.2em; border-radius:10px; cursor:pointer;">
+          ทำแบบทดสอบใหม่
+        </button>
+      </div>
+    `;
+  }
+</script>
+
+</body>
+</html>
